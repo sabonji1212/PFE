@@ -38,8 +38,13 @@ def predict():
         features_2d = features.reshape(1, -1)
 
         prediction = model.predict(features_2d)
+        prediction_value = prediction[0]
+        if prediction_value > 20.0:
+            prediction_value = 20.0
+        if prediction_value < 0.0:
+            prediction_value = 0.0
 
-        return jsonify({'prediction': prediction[0]})
+        return jsonify({'prediction': prediction_value})
     except Exception as e:
         print(f"Error during prediction: {e}")
         return jsonify({'error': f'An error occurred: {e}'}), 500
