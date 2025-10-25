@@ -70,37 +70,104 @@
     }
   </style>
 </head>
-<form id="prediction-form" action="/predict" method="POST">
+<form  id="prediction-form">
 
     <body>
     <div class="container">
         <h2>Prediction Form</h2>
 
         <div class="input-group">
-        <label for="input1">Feature 1</label>
-        <input type="text" id="input1" placeholder="Enter value" required>
+        <label for="Hours_Studied">Hours Studied</label>
+        <input type="text" id="Hours_Studied" placeholder="Enter value" required>
 
-        <label for="input2">Feature 2</label>
-        <input type="text" id="input2" placeholder="Enter value" required>
+        <label for="Attendance">Attendance</label>
+        <input type="text" id="Attendance" placeholder="Enter value" required>
 
-        <label for="input3">Feature 3</label>
-        <input type="text" id="input3" placeholder="Enter value" required>
+        <label for="Parental_Involvement">Parental Involvement</label>
+        <input type="text" id="Parental_Involvement" placeholder="Enter value" required>
         </div>
 
         <div class="input-group">
-        <label for="input4">Feature 4</label>
-        <input type="text" id="input4" placeholder="Enter value" required>
+        <label for="Teacher_Quality">Teacher Quality</label>
+        <input type="text" id="Teacher_Quality" placeholder="Enter value" required>
 
-        <label for="input5">Feature 5</label>
-        <input type="text" id="input5" placeholder="Enter value" required>
+        <label for="Parental_Education_Level">Parental Education Level</label>
+        <input type="text" id="Parental_Education_Level" placeholder="Enter value" required>
 
-        <label for="input6">Feature 6</label>
-        <input type="text" id="input6" placeholder="Enter value" required>
+        <label for="Previous_Scores">Previous Scores</label>
+        <input type="text" id="Previous_Scores" placeholder="Enter value" required>
         </div>
 
-        <button type="submit">Predict</button>
+        <button type="submit" id="submit-button">Predict</button>
         <p id="result"></p>
     </div>
+
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('prediction-form');
+        const resultElement = document.getElementById('result');
+        const submitButton = document.getElementById('submit-button');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            resultElement.textContent = '';
+            resultElement.classList.remove('result-error', 'result-success');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Predicting...';
+
+            try{
+              const inputs = [
+            document.getElementById('Hours_Studied').value,
+            document.getElementById('Attendance').value,
+            document.getElementById('Parental_Involvement').value,
+            document.getElementById('Teacher_Quality').value,
+            document.getElementById('Parental_Education_Level').value,
+            document.getElementById('Previous_Scores').value,
+          ];
+            const features = inputs.map(val => parseFloat(val));
+            if (features.some(isNaN)) {
+            throw new Error('Please enter valid numbers in all fields.');
+          } 
+
+            const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ features: features }), 
+          });
+
+          const data = await response.json();
+           if (!response.ok) {
+            throw new Error(data.error || 'An unknown error occurred.');
+          }
+
+
+           const predictionValue = parseFloat(data.prediction).toFixed(4); // Format to 4 decimal places
+           resultElement.textContent = `Prediction: ${predictionValue}`;
+            resultElement.classList.add('result-success');
+
+
+
+          }catch(error){
+            resultElement.textContent = `Error: ${error.message}`;
+            resultElement.classList.add('result-error');
+            console.error('Prediction error:', error);
+          }finally{
+             submitButton.disabled = false;
+             submitButton.textContent = 'Predict';
+          }
+
+
+        });
+
+
+
+      });
+    </script>
+
+
 </form>
 </body>
 </html>
