@@ -77,25 +77,25 @@
         <h2>Prediction Form</h2>
 
         <div class="input-group">
-        <label for="Hours_Studied">Hours Studied</label>
-        <input type="text" id="Hours_Studied" placeholder="Enter value" required>
+        <label for="Hours_Studied">Hours Studied (H)</label>
+        <input type="text" id="Hours_Studied" placeholder="eg. 1 ~ 45" required>
 
-        <label for="Attendance">Attendance</label>
-        <input type="text" id="Attendance" placeholder="Enter value" required>
+        <label for="Attendance">Attendance (%)</label>
+        <input type="text" id="Attendance" placeholder="eg. 0 ~ 100" required>
 
-        <label for="Parental_Involvement">Parental Involvement</label>
-        <input type="text" id="Parental_Involvement" placeholder="Enter value" required>
+        <label for="Parental_Involvement">Parental Involvement (Low, Medium, High).</label>
+        <input type="text" id="Parental_Involvement" placeholder="eg. 1 ~ 2 ~ 3" required>
         </div>
 
         <div class="input-group">
-        <label for="Teacher_Quality">Teacher Quality</label>
-        <input type="text" id="Teacher_Quality" placeholder="Enter value" required>
+        <label for="Teacher_Quality">Teacher Quality (Low, Medium, High)</label>
+        <input type="text" id="Teacher_Quality" placeholder="eg. 1 ~ 2 ~ 3" required>
 
-        <label for="Parental_Education_Level">Parental Education Level</label>
-        <input type="text" id="Parental_Education_Level" placeholder="Enter value" required>
+        <label for="Family_Income">Family_Income (Low, Medium, High)</label>
+        <input type="text" id="Family_Income" placeholder="eg. 1 ~ 2 ~ 3" required>
 
-        <label for="Previous_Scores">Previous Scores</label>
-        <input type="text" id="Previous_Scores" placeholder="Enter value" required>
+        <label for="Previous_Scores">Previous Scores (p)</label>
+        <input type="text" id="Previous_Scores" placeholder="eg. 0 ~ 100" required>
         </div>
 
         <button type="submit" id="submit-button">Predict</button>
@@ -122,10 +122,11 @@
             document.getElementById('Attendance').value,
             document.getElementById('Parental_Involvement').value,
             document.getElementById('Teacher_Quality').value,
-            document.getElementById('Parental_Education_Level').value,
+            document.getElementById('Family_Income').value,
             document.getElementById('Previous_Scores').value,
           ];
             const features = inputs.map(val => parseFloat(val));
+            features[5] = features[5] * 5;
             if (features.some(isNaN)) {
             throw new Error('Please enter valid numbers in all fields.');
           } 
@@ -144,7 +145,7 @@
           }
 
 
-           const predictionValue = parseFloat(data.prediction).toFixed(4); // Format to 4 decimal places
+           const predictionValue = parseFloat(data.prediction).toFixed(4); 
            resultElement.textContent = `Prediction: ${predictionValue}`;
             resultElement.classList.add('result-success');
 

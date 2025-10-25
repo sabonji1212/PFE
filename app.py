@@ -5,10 +5,18 @@ import numpy as np
 try:
     model = joblib.load("student_performance_pipeline.joblib")
     print("✅ Model loaded successfully!")
+
+    
+    
 except Exception as e:
     print(f"❌ Error loading model: {e}")
     model = None
-all_features = {
+
+
+
+
+
+mean_values = {
     'Hours_Studied': 19.975329,
     'Attendance': 79.977448,
     'Parental_Involvement': 1.086423,
@@ -27,7 +35,6 @@ all_features = {
     'Parental_Education_Level': 0.696080,
     'Distance_from_Home': 0.501589,
     'Gender': 0.422733,
-    'Exam_Score': 13.447132,
     'Peer_Negative': 0.208415,
     'Peer_Neutral': 0.392311,
     'Peer_Positive': 0.399273,
@@ -36,17 +43,44 @@ all_features = {
     'Physical_Impact': 20.858937
 }
 app = Flask(__name__)
+@app.route('/')
+def home():
+    
+    return render_template('index.html')
 
 
-@app.route('/predict')
+@app.route('/predict' , methods=['POST'])
 def predict():
     if model is None:
         return jsonify({"error": "Model not loaded"}), 500
+    try:
+        data = request.get_json()
+        features_list = data.get('features')
+
+        if not features_list or len(features_list) != 6:
+            return jsonify({'error': 'Invalid input. Expected 6 features.'}), 400
+        
 
 
+        input_features_names = [
+        'Hours_Studied', 'Attendance', 'Parental_Involvement',
+        'Teacher_Quality', 'Family_Income', 'Previous_Scores'
+        ]
+        user_inputs = dict(zip(input_features_names, features_list))
+
+        all_features = mean_values.copy()
+        all_features.update(user_inputs)
 
 
-    return render_template('index.html')
+        feature_order = list(mean_values.keys())
+        features = np.array([all_features[name] for name in feature_order], dtype=float)
+        features_2d = features.reshape(1, -1)
+        prediction = model.predict(features_2d)
+        return jsonify({'prediction': prediction[0]})
+    except Exception as e:
+        print(f"Error during prediction: {e}")
+        return jsonify({'error': f'An error occurred: {e}'}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)
