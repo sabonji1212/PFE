@@ -84,18 +84,18 @@
         <input type="text" id="Attendance" placeholder="eg. 0 ~ 100" required>
 
         <label for="Parental_Involvement">Parental Involvement (Low, Medium, High).</label>
-        <input type="text" id="Parental_Involvement" placeholder="eg. 1 ~ 2 ~ 3" required>
+        <input type="text" id="Parental_Involvement" placeholder="eg. 0 ~ 1 ~ 2" required>
         </div>
 
         <div class="input-group">
         <label for="Teacher_Quality">Teacher Quality (Low, Medium, High)</label>
-        <input type="text" id="Teacher_Quality" placeholder="eg. 1 ~ 2 ~ 3" required>
+        <input type="text" id="Teacher_Quality" placeholder="eg. 0 ~ 1 ~ 2" required>
 
         <label for="Family_Income">Family_Income (Low, Medium, High)</label>
-        <input type="text" id="Family_Income" placeholder="eg. 1 ~ 2 ~ 3" required>
+        <input type="text" id="Family_Income" placeholder="eg. 0 ~ 1 ~ 2" required>
 
         <label for="Previous_Scores">Previous Scores (p)</label>
-        <input type="text" id="Previous_Scores" placeholder="eg. 0 ~ 100" required>
+        <input type="text" id="Previous_Scores" placeholder="eg. 0 ~ 20" required>
         </div>
 
         <button type="submit" id="submit-button">Predict</button>
@@ -126,7 +126,7 @@
             document.getElementById('Previous_Scores').value,
           ];
             const features = inputs.map(val => parseFloat(val));
-            features[5] = features[5] * 5;
+            //features[5] = features[5] * 5;
             if (features.some(isNaN)) {
             throw new Error('Please enter valid numbers in all fields.');
           } 
